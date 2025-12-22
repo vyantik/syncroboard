@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client"
+  output   = "./generated"
+}
+
+generator nestjs {
+  provider = "prisma-nestjs-graphql"
+  output   = "./graphql"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id String @id @default(uuid())
+
+  email    String @unique
+  /// @HideField()
+  password String
+
+  username    String @unique
+  displayName String
+
+  avatar String?
+  bio    String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("users")
+}
