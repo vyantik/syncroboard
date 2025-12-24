@@ -6,6 +6,8 @@ import {
 } from '@nestjs/common'
 import { hash } from 'argon2'
 
+import { Board } from '@/prisma/graphql/board/board.model'
+import { Task } from '@/prisma/graphql/task/task.model'
 import { User } from '@/prisma/graphql/user/user.model'
 
 import type { CreateUserInput } from './inputs/create-user.input'
@@ -40,5 +42,17 @@ export class AccountService {
 			...dto,
 			password: await hash(password),
 		})
+	}
+
+	public async getOwnedBoards(userId: string): Promise<Board[]> {
+		return await this.accountRepository.findOwnedBoards(userId)
+	}
+
+	public async getMemberBoards(userId: string): Promise<Board[]> {
+		return await this.accountRepository.findMemberBoards(userId)
+	}
+
+	public async getAssignedTasks(userId: string): Promise<Task[]> {
+		return await this.accountRepository.findAssignedTasks(userId)
 	}
 }

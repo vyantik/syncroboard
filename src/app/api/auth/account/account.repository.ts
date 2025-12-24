@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import type { Prisma, User } from '@prisma'
+import type { Board, Prisma, Task, User } from '@prisma'
 
 import { BaseRepository } from '@/src/shared'
 
@@ -61,5 +61,27 @@ export class AccountRepository
 		where?: Prisma.UserWhereInput,
 	): Promise<User | null> {
 		return this.model.findFirst({ where })
+	}
+
+	public async findOwnedBoards(userId: string): Promise<Board[]> {
+		return await this.prismaService.board.findMany({
+			where: { ownerId: userId },
+		})
+	}
+
+	public async findMemberBoards(userId: string): Promise<Board[]> {
+		return await this.prismaService.board.findMany({
+			where: {
+				members: {
+					some: { id: userId },
+				},
+			},
+		})
+	}
+
+	public async findAssignedTasks(userId: string): Promise<Task[]> {
+		return await this.prismaService.task.findMany({
+			where: { assigneeId: userId },
+		})
 	}
 }
