@@ -9,8 +9,8 @@ import { ConfigService } from '@nestjs/config'
 import { verify } from 'argon2'
 import type { Request } from 'express'
 
-import type { IAccountRepository } from '../account/interfaces'
-import { ACCOUNT_REPOSITORY_TOKEN } from '../account/tokens'
+import type { IAccountRepository } from '../../account/interfaces'
+import { ACCOUNT_REPOSITORY_TOKEN } from '../../account/tokens'
 
 import type { LoginInput } from './inputs'
 

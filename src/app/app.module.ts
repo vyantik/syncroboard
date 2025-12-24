@@ -17,7 +17,6 @@ import { InfraModule } from './infra/infra.module'
 		}),
 		GraphQLModule.forRootAsync({
 			driver: ApolloDriver,
-			imports: [ConfigModule],
 			useFactory: getGraphQLConfig,
 			inject: [ConfigService],
 		}),
