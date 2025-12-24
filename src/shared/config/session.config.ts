@@ -1,6 +1,6 @@
 import type { ConfigService } from '@nestjs/config'
-import { RedisStore } from 'connect-redis'
-import type { CookieOptions, SessionOptions } from 'express-session'
+import RedisStore from 'connect-redis'
+import type { CookieOptions, SessionOptions, Store } from 'express-session'
 
 import { RedisService } from '@/src/app/infra/redis/redis.service'
 
@@ -22,6 +22,7 @@ export function getSessionConfig(
 	const maxAge = ms(configService.getOrThrow<StringValue>('SESSION_MAX_AGE'))
 
 	const prefix = configService.getOrThrow<string>('SESSION_PREFIX')
+	const cookieName = configService.getOrThrow<string>('SESSION_COOKIE_NAME')
 
 	const cookieOptions: CookieOptions = {
 		domain: sessionDomain,
@@ -31,14 +32,17 @@ export function getSessionConfig(
 		sameSite,
 	}
 
+	const store: Store = new RedisStore({
+		client: redisService,
+		prefix,
+	}) as Store
+
 	return {
 		secret: sessionSecret,
 		resave: false,
 		saveUninitialized: false,
 		cookie: cookieOptions,
-		store: new RedisStore({
-			client: redisService,
-			prefix,
-		}),
+		name: cookieName,
+		store,
 	}
 }

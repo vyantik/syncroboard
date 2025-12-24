@@ -5,11 +5,19 @@ import { join } from 'path'
 
 import { isDev } from '../utils'
 
+import { errorFormat } from './error-format.config'
+
 export function getGraphQLConfig(
 	configService: ConfigService,
 ): ApolloDriverConfig {
 	return {
-		playground: isDev(configService),
+		playground: isDev(configService)
+			? {
+					settings: {
+						'request.credentials': 'include',
+					},
+				}
+			: false,
 		path: configService.getOrThrow<string>('GRAPHQL_PREFIX'),
 		autoSchemaFile: join(process.cwd(), 'src/app/graphql/schema.gql'),
 		sortSchema: true,
@@ -17,5 +25,6 @@ export function getGraphQLConfig(
 			req,
 			res,
 		}),
+		formatError: error => errorFormat(error),
 	}
 }
