@@ -1,6 +1,12 @@
-import { ConflictException, Inject, Injectable } from '@nestjs/common'
-import type { User } from '@prisma'
+import {
+	ConflictException,
+	Inject,
+	Injectable,
+	NotFoundException,
+} from '@nestjs/common'
 import { hash } from 'argon2'
+
+import { User } from '@/prisma/graphql/user/user.model'
 
 import type { CreateUserInput } from './inputs/create-user.input'
 import type { IAccountRepository } from './interfaces'
@@ -13,8 +19,12 @@ export class AccountService {
 		private readonly accountRepository: IAccountRepository,
 	) {}
 
-	public async getMe(): Promise<User[]> {
-		return await this.accountRepository.findMany()
+	public async getMe(userId: string): Promise<User> {
+		const user = await this.accountRepository.findById(userId)
+		if (!user) {
+			throw new NotFoundException('User not found')
+		}
+		return user
 	}
 
 	public async create(dto: CreateUserInput): Promise<User> {
