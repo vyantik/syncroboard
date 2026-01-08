@@ -3,7 +3,6 @@ import {
 	Inject,
 	Injectable,
 	InternalServerErrorException,
-	Logger,
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { verify } from 'argon2'
@@ -16,8 +15,6 @@ import type { LoginInput } from './inputs'
 
 @Injectable()
 export class SessionService {
-	private readonly logger = new Logger(SessionService.name)
-
 	public constructor(
 		@Inject(ACCOUNT_REPOSITORY_TOKEN)
 		private readonly accountRepository: IAccountRepository,
@@ -28,9 +25,18 @@ export class SessionService {
 		req: Request,
 		{ login, password }: LoginInput,
 	): Promise<boolean> {
-		const account = await this.accountRepository.findFirst({
-			OR: [{ username: { equals: login } }, { email: { equals: login } }],
-		})
+		const account = await this.accountRepository.findFirst(
+			{
+				OR: [
+					{ username: { equals: login } },
+					{ email: { equals: login } },
+				],
+			},
+			{
+				id: true,
+				password: true,
+			},
+		)
 		if (!account) {
 			throw new BadRequestException('Invalid credentials')
 		}

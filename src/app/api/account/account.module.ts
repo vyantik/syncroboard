@@ -8,6 +8,7 @@ import { TasksModule } from './tasks/tasks.module'
 import { ACCOUNT_REPOSITORY_TOKEN } from './tokens'
 
 @Module({
+	imports: [BoardModule, TasksModule],
 	providers: [
 		AccountResolver,
 		AccountService,
@@ -16,6 +17,6 @@ import { ACCOUNT_REPOSITORY_TOKEN } from './tokens'
 			useClass: AccountRepository,
 		},
 	],
-	imports: [BoardModule, TasksModule],
+	exports: [ACCOUNT_REPOSITORY_TOKEN],
 })
 export class AccountModule {}

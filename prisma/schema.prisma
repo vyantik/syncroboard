@@ -32,7 +32,7 @@ model User {
   assignedTasks Task[]  @relation("TaskAssignee")
 
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("users")
 }
@@ -43,13 +43,13 @@ model Board {
   description String?
 
   owner   User   @relation("BoardOwner", fields: [ownerId], references: [id])
-  ownerId String
+  ownerId String @map("owner_id")
 
   members User[]   @relation("BoardMembers")
   columns Column[]
 
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("boards")
 }
@@ -59,7 +59,7 @@ model Column {
   title String
   order Int
 
-  boardId String
+  boardId String @map("board_id")
   board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
 
   tasks Task[]
@@ -75,14 +75,14 @@ model Task {
   order       Int
   priority    Priority @default(LOW)
 
-  columnId String
+  columnId String @map("column_id")
   column   Column @relation(fields: [columnId], references: [id], onDelete: Cascade)
 
-  assigneeId String?
+  assigneeId String? @map("assignee_id")
   assignee   User?   @relation("TaskAssignee", fields: [assigneeId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([columnId])
   @@map("tasks")
