@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { Board } from '@prisma'
 
+import type { Board } from '@/prisma/generated/client'
 import { PrismaService } from '@/src/app/infra'
 import { BaseRepository } from '@/src/shared'
 
